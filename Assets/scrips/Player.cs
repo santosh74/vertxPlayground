@@ -6,12 +6,9 @@ using VertexUnityPlayer;
 public class Player : MonoBehaviour {
 
     public float movementSpeed = 10;
-
-    private bool isGrabbed = false;
-
-    private GameObject tempParent = null;
-
     private GameObject chosenObject;
+    
+    private bool isGrabbed = false;
 
     private Transform parent;
 
@@ -22,10 +19,11 @@ public class Player : MonoBehaviour {
        yield return new WaitForSeconds(5);
 
        NodeLink[] vertxObj=  FindObjectsOfType<NodeLink>();
-
         foreach (NodeLink nodelink in vertxObj)
         {
             Debug.Log("Name : " + nodelink.name + "GUID : "  +nodelink.Guid);
+
+            //nodelink.AddComponent<Rigidbody>();
         }
 
        
@@ -34,15 +32,9 @@ public class Player : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-
-       // Debug.Log(isGrabbed);
-      
-        if(isGrabbed)
-        {
-            chosenObject.transform.position = transform.position;
-        }
+ 
         // check for up arrow key
-        if (Input.GetAxis("Vertical") > 0.5)
+       if (Input.GetAxis("Vertical") > 0.5)
         {
             //  up 
             transform.Translate(Vector3.up * Time.deltaTime * movementSpeed);
@@ -55,12 +47,12 @@ public class Player : MonoBehaviour {
         else if (Input.GetAxis("Horizontal") > 0.5)
         {
             // Left arrow
-            transform.Translate(Vector3.left * Time.deltaTime * movementSpeed);
+            transform.Translate(-transform.right * Time.deltaTime * movementSpeed);
         }
         else if (Input.GetAxis("Horizontal") < -0.5)
         {
             // right
-            transform.Translate(Vector3.right * Time.deltaTime * movementSpeed);
+            transform.Translate(transform.right * Time.deltaTime * movementSpeed);
         }
         else if (Input.GetAxis("LeftHorizontal") > 0.5)
         {
@@ -73,12 +65,12 @@ public class Player : MonoBehaviour {
         else if (Input.GetAxis("LeftVertical") > 0.5)
         {
             // forward
-            transform.Translate(Vector3.forward * Time.deltaTime * movementSpeed);
+            transform.Translate(-transform.forward * Time.deltaTime * movementSpeed);
         }
         else if (Input.GetAxis("LeftVertical") < -0.5)
         {
             // backward
-            transform.Translate(Vector3.back * Time.deltaTime * movementSpeed);
+            transform.Translate(transform.forward * Time.deltaTime * movementSpeed);
         }
         else if (Input.GetButtonDown("A"))
         {
@@ -92,6 +84,12 @@ public class Player : MonoBehaviour {
 
             DropObject();
         }
+
+        if (chosenObject != null && targetObject != null)
+        {
+            chosenObject.transform.position = targetObject.transform.position;
+            chosenObject.transform.rotation = targetObject.transform.rotation;
+        }
     }
 
 
@@ -99,7 +97,18 @@ public class Player : MonoBehaviour {
     {
         Debug.Log("collision : " + other.gameObject.tag);
 
-        chosenObject = other.gameObject.FindNodeLink();
+        if(other.gameObject.tag != "EditorOnly")
+        {
+            GetComponent<Renderer>().material.color = Color.blue;
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag != "EditorOnly")
+        {
+            chosenObject = other.gameObject.FindNodeLink();
+        }
     }
 
 
@@ -107,23 +116,45 @@ public class Player : MonoBehaviour {
     private void OnTriggerExit(Collider other)
     {
         //chosenObject = null;
+        GetComponent<Renderer>().material.color = Color.white;
     }
+
+    GameObject targetObject = null;
 
     void PickupObject()
     {
-       
-        parent = chosenObject.transform.parent;
-        isGrabbed = true;
-        chosenObject.transform.parent = transform;
+        if(chosenObject != null)
+        {
+            if (targetObject != null)
+            {
+                Destroy(targetObject);
+                targetObject = null;
+            }
+
+           GameObject newTarget = new GameObject("newTarget");
+            targetObject = newTarget;
+            targetObject.transform.parent = gameObject.transform;
+            targetObject.transform.position = chosenObject.transform.position;
+
+            GetComponent<Renderer>().material.color = Color.red;
+            isGrabbed = true;
+            chosenObject.GetComponent<Rigidbody>().isKinematic = false;
+            chosenObject.GetComponent<Rigidbody>().useGravity = false; ;
+        }
 
     }
 
     void DropObject()
     {
+        Debug.Log("DRop object::");
         isGrabbed = false;
-        //chosenObject.transform.parent = null;
-        //chosenObject.transform = transform;
-        chosenObject.transform.parent = parent;
-        //chosenObject.transform.
+        GetComponent<Renderer>().material.color = Color.white;
+        chosenObject.GetComponent<Rigidbody>().useGravity = true;
+        //chosenObject.GetComponent<Rigidbody>().isKinematic = true;
+        Destroy(targetObject);
+        targetObject = null;
+        chosenObject = null;
+
+
     }
 }

@@ -16,6 +16,21 @@ public class AddPhysics : MonoBehaviour {
 
     void NodeLink_Loaded()
     {
-        gameObject.AddComponent<Rigidbody>();
+        Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+        rb.useGravity = false;
+        rb.isKinematic = true;
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+
+        Debug.Log("OnTriggerEnter");
+        if (other.gameObject.tag == "EditorOnly")
+        {
+            Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+            rb.useGravity = false;
+            rb.isKinematic = true;
+        }
     }
 }
