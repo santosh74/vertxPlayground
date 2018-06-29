@@ -481,13 +481,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 420969163}
-  m_LocalRotation: {x: -0.010679611, y: -0.637664, z: 0.012898198, w: 0.77013266}
-  m_LocalPosition: {x: 10.47, y: 2.61, z: -2.15}
+  m_LocalRotation: {x: 0.0036318428, y: -0.6830082, z: 0.0012208305, w: 0.7304007}
+  m_LocalPosition: {x: 10.17, y: 2.16, z: -0.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: -79.249, z: 1.9190001}
+  m_LocalEulerAnglesHint: {x: 0.4, y: -86.16, z: -0.18200001}
 --- !u!114 &420969168
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1906,7 +1906,7 @@ GameObject:
   m_TagString: warehouse
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &1737697307
 Transform:
@@ -2328,7 +2328,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1940000079}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.41, z: 0}
+  m_LocalPosition: {x: 0, y: 1.65, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_Children: []
   m_Father: {fileID: 0}
