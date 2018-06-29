@@ -167,7 +167,7 @@ public class Player : MonoBehaviour {
             chosenObject.GetComponent<Rigidbody>().useGravity = false;
 
             // send message to all vertx object
-            chosenObject.GetComponent<NodeLink>().Fire("OnMessageReceive", chosenObject.name);
+            chosenObject.GetComponent<NodeLink>().Fire("OnGrabbed", chosenObject.name);
         }
 
     }
@@ -179,7 +179,7 @@ public class Player : MonoBehaviour {
         GetComponent<Renderer>().material.color = Color.white;
         chosenObject.GetComponent<Rigidbody>().useGravity = true;
         // send message to all vertx object
-        chosenObject.GetComponent<NodeLink>().Fire("OnMessageReceive", chosenObject.name);
+        chosenObject.GetComponent<NodeLink>().Fire("OnDropped", chosenObject.name);
         //chosenObject.GetComponent<Rigidbody>().isKinematic = true;
         Destroy(targetObject);
         targetObject = null;
