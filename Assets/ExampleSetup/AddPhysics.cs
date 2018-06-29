@@ -25,12 +25,24 @@ public class AddPhysics : MonoBehaviour {
     private void OnTriggerEnter(Collider other)
     {
 
-        Debug.Log("OnTriggerEnter");
         if (other.gameObject.tag == "EditorOnly")
         {
             Rigidbody rb = gameObject.AddComponent<Rigidbody>();
             rb.useGravity = false;
             rb.isKinematic = true;
         }
+    }
+
+    void OnGrabbed(string name)
+    {
+        Debug.Log("OnGrabbed : " + name);
+
+        Player.grabbedList.Add(name);
+    }
+
+    void OnDropped(string name)
+    {
+        Debug.Log("OnDropped:  " + name);
+        Player.grabbedList.Remove(name);
     }
 }

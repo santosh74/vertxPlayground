@@ -12,8 +12,15 @@ public class Player : MonoBehaviour {
 
     private Transform parent;
 
+    public static List<string> grabbedList;
+
     // Use this for initialization
-    IEnumerator Start()
+
+    private void Start()
+    {
+        grabbedList = new List<string>();
+    }
+    /*IEnumerator Start()
     {
 
        yield return new WaitForSeconds(5);
@@ -25,9 +32,7 @@ public class Player : MonoBehaviour {
 
             //nodelink.AddComponent<Rigidbody>();
         }
-
-       
-    }
+    }*/
 
     // Update is called once per frame
     void Update()
@@ -97,7 +102,7 @@ public class Player : MonoBehaviour {
     {
         Debug.Log("collision : " + other.gameObject.tag);
 
-        if(other.gameObject.tag != "EditorOnly")
+        if (canBeGrabbed(other))
         {
             GetComponent<Renderer>().material.color = Color.blue;
         }
@@ -105,24 +110,40 @@ public class Player : MonoBehaviour {
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.tag != "EditorOnly")
+        if (canBeGrabbed(other))
         {
             chosenObject = other.gameObject.FindNodeLink();
+            Debug.Log("OnTriggerStay => " + other.gameObject.tag);
+            if(other.gameObject.GetComponent<NodeLink>() != null)
+            {
+                //chosenObject = other.gameObject.FindNodeLink();
+            }
+            
         }
     }
 
 
+    private bool canBeGrabbed(Collider other)
+    {
+        return !(other.gameObject.CompareTag("EditorOnly") || other.gameObject.CompareTag("warehouse") || other.gameObject.CompareTag("wall"));
+
+    }
 
     private void OnTriggerExit(Collider other)
     {
         //chosenObject = null;
-        GetComponent<Renderer>().material.color = Color.white;
+        if (canBeGrabbed(other))
+        {
+            GetComponent<Renderer>().material.color = Color.white;
+        }
+           
     }
 
     GameObject targetObject = null;
 
     void PickupObject()
     {
+
         if(chosenObject != null)
         {
             if (targetObject != null)
@@ -130,7 +151,11 @@ public class Player : MonoBehaviour {
                 Destroy(targetObject);
                 targetObject = null;
             }
-
+            // check if chosenObject exists in the grabbed list
+            if(grabbedList.Contains(chosenObject.name))
+            {
+                return;
+            }
            GameObject newTarget = new GameObject("newTarget");
             targetObject = newTarget;
             targetObject.transform.parent = gameObject.transform;
@@ -139,7 +164,10 @@ public class Player : MonoBehaviour {
             GetComponent<Renderer>().material.color = Color.red;
             isGrabbed = true;
             chosenObject.GetComponent<Rigidbody>().isKinematic = false;
-            chosenObject.GetComponent<Rigidbody>().useGravity = false; ;
+            chosenObject.GetComponent<Rigidbody>().useGravity = false;
+
+            // send message to all vertx object
+            chosenObject.GetComponent<NodeLink>().Fire("OnMessageReceive", chosenObject.name);
         }
 
     }
@@ -150,11 +178,13 @@ public class Player : MonoBehaviour {
         isGrabbed = false;
         GetComponent<Renderer>().material.color = Color.white;
         chosenObject.GetComponent<Rigidbody>().useGravity = true;
+        // send message to all vertx object
+        chosenObject.GetComponent<NodeLink>().Fire("OnMessageReceive", chosenObject.name);
         //chosenObject.GetComponent<Rigidbody>().isKinematic = true;
         Destroy(targetObject);
         targetObject = null;
         chosenObject = null;
-
+        
 
     }
 }
