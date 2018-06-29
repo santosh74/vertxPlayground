@@ -146,6 +146,7 @@ public class Player : MonoBehaviour {
 
         if(chosenObject != null)
         {
+            isGrabbed = true;
             if (targetObject != null)
             {
                 Destroy(targetObject);
@@ -162,7 +163,7 @@ public class Player : MonoBehaviour {
             targetObject.transform.position = chosenObject.transform.position;
 
             GetComponent<Renderer>().material.color = Color.red;
-            isGrabbed = true;
+            
             chosenObject.GetComponent<Rigidbody>().isKinematic = false;
             chosenObject.GetComponent<Rigidbody>().useGravity = false;
 
